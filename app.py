@@ -48,18 +48,18 @@ final_answer = FinalAnswerTool()
 # )
 
 model = TransformersModel(
-    model_id='google/gemma-3-4b-it',
-    device = "mps" # it is possible that this model may be overloaded
+    model_id='google/gemma-3-12b-it',
+    device_map = "mps", # it is possible that this model may be overloaded
     torch_dtype=torch.bfloat16
 )
 
-messages = [
-    {"role": "user", "content": prompt_text}
-    # You could add a system prompt here if needed:
-    # {"role": "system", "content": "You are a concise assistant."}
-]
+# messages = [
+#     {"role": "user", "content": prompt_text}
+#     # You could add a system prompt here if needed:
+#     # {"role": "system", "content": "You are a concise assistant."}
+# ]
 
-response_content = model(messages, stop_sequences=["\nHuman:", "\nUser:"])
+# response_content = model(messages, stop_sequences=["\nHuman:", "\nUser:"])
 
 
 # Import tool from Hub
@@ -70,7 +70,7 @@ with open("prompts.yaml", 'r') as stream:
     
 agent = CodeAgent(
     model=model,
-    tools=[final_answer], ## add your tools here (don't remove final answer)
+    tools=[final_answer, get_current_time_in_timezone], ## add your tools here (don't remove final answer)
     max_steps=6,
     verbosity_level=1,
     grammar=None,
